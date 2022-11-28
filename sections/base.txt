@@ -1,0 +1,10 @@
+<h1 align="center">
+    <br>
+    <img src="https://raw.githubusercontent.com/le-flav-b/{logo_path}" alt="{project_name}" width="150">
+    <br><br>
+
+    {project_emoji} {project_name} {project_emoji}
+</h1>
+
+
+<h3 align="center">{project_subtitle}</h3>
