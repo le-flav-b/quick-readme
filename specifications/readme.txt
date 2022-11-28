@@ -22,6 +22,7 @@ gif
 features
 changes in progress
 authors
+tree
 installation
 usage
 feedback

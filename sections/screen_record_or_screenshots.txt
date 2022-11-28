@@ -1,0 +1,1 @@
+![{type}](https://raw.githubusercontent.com/le-flav-b/{screen_record_or_screenshots_path})
