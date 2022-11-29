@@ -71,8 +71,8 @@ class Window:
         else:
             destroy = True
         if destroy:
-            # if self.infos['contributing'] != "":  #TODO add a contributing condition (with checkbox)
-            #     tk.messagebox.showinfo('Quick Readme', "Don't forget to create the contributing.md file !")
+            if self.info_other[2].get():
+                tk.messagebox.showinfo('Quick Readme', "Don't forget to create the contributing.md file !")
             self.root.destroy()
 
     def complete_infos(self) -> None:
