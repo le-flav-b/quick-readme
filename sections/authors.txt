@@ -4,4 +4,4 @@
 
 ## Co-Authors
 
-{co_authors_list}
+{authors}

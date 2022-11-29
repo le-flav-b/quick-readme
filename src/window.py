@@ -90,7 +90,6 @@ class Window:
         self.infos['feedback'] = self.info_other[1].get()
         self.infos['contributing'] = self.info_other[2].get()
         self.infos['reachme'] = self.info_other[3].get()
-        print(self.infos)
 
     def eval_markdown_before(self) -> int:
         """Evaluate the markdown before copying or downloading
@@ -118,6 +117,7 @@ class Window:
         """Download the markdown file
         """
         if self.eval_markdown_before():
+            print(type(self.result))
             with open(self.infos['directory'] + "/README.md", "w") as file:
                 file.write(self.result)
 

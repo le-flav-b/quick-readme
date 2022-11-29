@@ -18,3 +18,9 @@ def get_git_repo_name(directory_path: str) -> str:
 
 def get_project_name(directory_path: str) -> str:
     return get_directory_name(directory_path).replace('_', ' ').title()
+
+def to_list(string: str) -> str:
+    return "* " + "\n* ".join(string.split())
+
+def remove_start_of_path(directory: str, path: str) -> str:
+    return path.split(get_directory_name(directory))[-1][1:]

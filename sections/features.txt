@@ -4,4 +4,4 @@
 
 ## Features
 
-{features_list}
+{features}

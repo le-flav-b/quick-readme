@@ -4,4 +4,4 @@
 
 ## Project Tree
 
-{project_tree}
+{tree}
