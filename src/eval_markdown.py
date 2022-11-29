@@ -1,4 +1,4 @@
-def eval_markdown(window) -> str:
+def eval_markdown(infos: dict) -> str:
     """Evaluate the markdown content
 
     Args:
@@ -7,5 +7,6 @@ def eval_markdown(window) -> str:
     Returns:
         str: The markdown content
     """
+    #TODO
     result = ""
-    return window.result
+    return result
