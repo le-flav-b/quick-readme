@@ -44,7 +44,7 @@ class Window:
             yes_no_cancel = tk.messagebox.askyesnocancel('Quick Readme', 'You are about to close the application without saving the changes. Do you want to download the README.md ?')
             if yes_no_cancel:
                 self.download_file()
-                if self.directory == "":
+                if self.directory == "" or self.result is None:
                     yes_no_cancel = None
             if yes_no_cancel is not None:
                 destroy = True
@@ -55,27 +55,40 @@ class Window:
             #     tk.messagebox.showinfo('Quick Readme', "Don't forget to create the contributing.md file !")
             self.root.destroy()
 
+    def eval_markdown_before(self) -> int:
+        """Evaluate the markdown before copying or downloading
+
+        Returns:
+            int: 1 if the markdown is ready to be copy or download, 0 if not
+        """
+        if self.directory == "":
+            tk.messagebox.showerror('Quick Readme', 'Error: No directory selected')
+            return 0
+        self.result = eval_markdown(self)
+        if self.result is None:
+            tk.messagebox.showerror("Quick Readme", "An error occurred !")
+            return 0
+        self.last_result = self.result
+        return 1
+
     def copy_text(self) -> None:
         """Copy the markdown content to the clipboard
         """
-        self.result = eval_markdown(self)
-        self.last_result = self.result
-        pycopy(self.result)
+        if self.eval_markdown_before():
+            pycopy(self.result)
 
     def download_file(self) -> None:
         """Download the markdown file
         """
-        if self.directory == "":
-            tk.messagebox.showerror('Quick Readme', 'Error: No directory selected')
-            return
-        self.result = eval_markdown(self)
-        self.last_result = self.result
-        with open(self.directory + "/README.md", "w") as file:
-            file.write(self.result)
+        if self.eval_markdown_before():
+            with open(self.directory + "/README.md", "w") as file:
+                file.write(self.result)
 
     def open_edit_text_window(self) -> None:
         """Open the edit text window
         """
+        tk.messagebox.showwarning("Quick Readme", "Close the edit window will save modifications but only if you don't do other modifications by the interface after that.")
+
         self.result = eval_markdown(self)
         edit_text_window = tk.Tk()
         edit_text_window.title("Edit Text")
@@ -90,6 +103,7 @@ class Window:
             """Save the text and quit the window
             """
             self.result = text_box.get("1.0", "end-1c")
+            self.last_result = self.result
             edit_text_window.destroy()
 
         text_box = tk.Text(edit_text_window, bg="#2a2a2a", fg="#f2f2f2", font=("Arial", 12))
