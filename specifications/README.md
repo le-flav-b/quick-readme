@@ -26,7 +26,9 @@
 </p>
 
 ![screen record](https://raw.githubusercontent.com/amitmerchant1990/electron-markdownify/master/app/img/markdownify.gif)
-<br><br>
+<br>
+
+<br>
 
 
 ## Features
