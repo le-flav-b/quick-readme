@@ -57,13 +57,18 @@ class Window:
         self.root.mainloop()
 
     def close(self) -> None:
-        destroy = False
+        destroy = True
         self.complete_infos()
         enough = True
-        for info in self.obligatory:
+        for info in self.infos:
+            if info in ['tree', 'feedback', 'contributing', 'reachme']:
+                continue
             if self.infos[info] == "":
-                enough = False
-        if not enough or self.result != eval_markdown(self.infos):
+                if info in self.obligatory:
+                    enough = False
+            else:
+                destroy = False
+        if not destroy and (not enough or self.result != eval_markdown(self.infos)):
             yes_no_cancel = tk.messagebox.askyesnocancel('Quick Readme', 'You are about to close the application without saving the changes. Do you want to download the README.md ?')
             if yes_no_cancel:
                 self.download_file()
