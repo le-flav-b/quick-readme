@@ -1,5 +1,3 @@
 <br>
 
-<p>
-    {description}
-</p>
+{description}

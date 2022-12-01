@@ -3,8 +3,7 @@ from tkinter import ttk
 from pyperclip import copy as pycopy
 from src.littles_functions import *
 from src.eval_markdown import eval_markdown
-from src.scrollable_frame import VerticalScrolledFrame
-
+from io import open as iopen
 
 class Window:
     """Main window of the application
@@ -31,7 +30,6 @@ class Window:
         style.theme_use('azure')
 
         self.result = ""
-        self.last_result = ""
 
         self.sections = ["Base (obligatory) : ", "Description : ", "Screenshots : ", "List of Features : ", "List of Changes in Progress : ", "List of co-Authors : ", "Installation Instructions : ", "Usage Instructions : ", "Other Sections : "]
         self.infos = {
@@ -60,7 +58,12 @@ class Window:
 
     def close(self) -> None:
         destroy = False
-        if self.last_result != self.result:
+        self.complete_infos()
+        enough = True
+        for info in self.obligatory:
+            if self.infos[info] == "":
+                enough = False
+        if not enough or self.result != eval_markdown(self.infos):
             yes_no_cancel = tk.messagebox.askyesnocancel('Quick Readme', 'You are about to close the application without saving the changes. Do you want to download the README.md ?')
             if yes_no_cancel:
                 self.download_file()
@@ -104,7 +107,6 @@ class Window:
                 self.result = ""
                 return 0
         self.result = eval_markdown(self.infos)
-        self.last_result = self.result
         return 1
 
     def copy_text(self) -> None:
@@ -117,35 +119,56 @@ class Window:
         """Download the markdown file
         """
         if self.eval_markdown_before():
-            print(type(self.result))
-            with open(self.infos['directory'] + "/README.md", "w") as file:
+            with iopen(self.infos['directory'] + "/README.md", "w", encoding="utf-8") as file:
                 file.write(self.result)
 
     def open_edit_text_window(self) -> None:
         """Open the edit text window
         """
-        tk.messagebox.showwarning("Quick Readme", "Close the edit window will save modifications but only if you don't do other modifications by the interface after that.")
+        tk.messagebox.showwarning("Quick Readme", "If you change something from the edit window it will not be taken into account in th main window.")
         self.complete_infos()
-        self.result = eval_markdown(self.infos)
+        if not self.eval_markdown_before():
+            return
         edit_text_window = tk.Tk()
         edit_text_window.title("Edit Text")
         edit_text_window.iconbitmap("assets/icon.ico")
         edit_text_window.geometry(f"{self.width}x{self.height}")
+        edit_text_window.minsize(450, 135) #########""
         edit_text_window.configure(bg="#222222")
 
         tk.Grid.rowconfigure(edit_text_window,0,weight=1)
         tk.Grid.columnconfigure(edit_text_window,0,weight=1)
 
-        def save_text_and_quit() -> str:
+        text_box = tk.Text(edit_text_window, bg="#2a2a2a", fg="#f2f2f2", font=("Arial", 12))
+        text_box.insert(tk.END, self.result)
+        edit_text_window.update()
+        #text_box.place(relwidth=0.96, relx=0.02, height=edit_text_window.winfo_height() - 70, y=edit_text_window.winfo_height() * 0.02)
+        text_box.grid(row=0, column=0, sticky="NSEW", padx=edit_text_window.winfo_width() * 0.02, pady=edit_text_window.winfo_height() * 0.02)
+
+        def my_copy():
+            pycopy(text_box.get("1.0", "end-1c"))
+        
+        def my_save():
+            with iopen(self.infos['directory'] + "/README.md", "w", encoding="utf-8") as file:
+                file.write(text_box.get("1.0", "end-1c"))
+
+        separator = ttk.Separator(edit_text_window, orient=tk.HORIZONTAL)
+        #separator.place(x=edit_text_window.winfo_width() * 0.07, y=edit_text_window.winfo_height() - 50, relwidth=0.86)
+        separator.grid(row=1, column=0, sticky="EW", padx=edit_text_window.winfo_width() * 0.07, pady=0)
+
+        button_copy = ttk.Button(edit_text_window, text="📜     Copy Text", width=18, command=my_copy)
+        #button_copy.place(x=edit_text_window.winfo_width() * 0.5 - edit_text_window.winfo_width() * 0.04, anchor='ne', y=edit_text_window.winfo_height() - 35)
+        button_copy.grid(row=2, column=0, sticky="W", padx=edit_text_window.winfo_width() * 0.2, pady=edit_text_window.winfo_height() * 0.02)
+
+        button_download = ttk.Button(edit_text_window, text="⬇️Download File", width=18, command=my_save)
+        #button_download.place(x=edit_text_window.winfo_width() * 0.5 + edit_text_window.winfo_width() * 0.04, y=edit_text_window.winfo_height() - 35)
+        button_download.grid(row=2, column=0, sticky="E", padx=edit_text_window.winfo_width() * 0.2, pady=edit_text_window.winfo_height() * 0.02)
+
+        def save_text_and_quit():
             """Save the text and quit the window
             """
             self.result = text_box.get("1.0", "end-1c")
-            self.last_result = self.result
             edit_text_window.destroy()
-
-        text_box = tk.Text(edit_text_window, bg="#2a2a2a", fg="#f2f2f2", font=("Arial", 12))
-        text_box.insert(tk.END, self.result)
-        text_box.grid(row=0, column=0, sticky="NSEW", padx=edit_text_window.winfo_width() * 0.03, pady=edit_text_window.winfo_height() * 0.03)
 
         edit_text_window.protocol("WM_DELETE_WINDOW", save_text_and_quit)
         edit_text_window.mainloop()
