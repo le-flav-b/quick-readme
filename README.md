@@ -51,6 +51,16 @@ The goal of this project is, as the name suggests, to quickly create good README
 <br>
 
 
+## Changes In Progress
+
+* Make a better tree (with better organization and without unnecessary details)
+* Add text correction (and maybe even autocomplete)
+* Put the creation of the screenshots gif directly in the interface
+* Add a preview
+
+<br>
+
+
 ## Usage
 
 The GUI is very ergonomic, you just have to execute it and you will know how to make a beautiful README.md !
